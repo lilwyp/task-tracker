@@ -50,6 +50,7 @@ function addTask() {
 
 function taskDelete(id) {
   document.getElementById(id).remove();
+  console.log(id);
 }
 
 // // Function for save task to localStorage
