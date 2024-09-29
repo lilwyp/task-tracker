@@ -1,23 +1,11 @@
 let taskId = 1;
 
-window.onload = function () {
-  loadTask();
-};
+// window.onload = function () {
+//   loadTask();
+// };
 
-document.getElementById("add-task-btn").addEventListener("click", function () {
-  const taskHeadValue = document.getElementById(
-    "task-head-" + taskId
-  ).textContent;
-  const taskTextValue = document.getElementById("task-p-" + taskId).textContent;
-
-  if (taskHeadValue && taskTextValue) {
-    addTask(taskHeadValue, taskTextValue);
-    saveTask(taskHeadValue, taskTextValue);
-  }
-});
-
-// Function for add task on screen and save task if redacted
-function addTask(taskHeadValue, taskTextValue) {
+// Функция для создания пустого(?) таска
+function addTask() {
   const taskDiv = document.createElement("div");
   taskDiv.classList.add("task");
   taskDiv.id = "task-" + taskId;
@@ -32,49 +20,54 @@ function addTask(taskHeadValue, taskTextValue) {
 
   const taskHead = document.createElement("h2");
   taskHead.classList.add("task-head");
-  checkbox.id = "task-head-" + taskId;
-  taskHead.textContent = taskHeadValue;
-  taskHead.contentEditable = true;
+  taskHead.id = "task-head-" + taskId;
+  taskHead.textContent = "Your task head";
+  // taskHead.contentEditable = true;
 
   const taskText = document.createElement("p");
-  taskText.classList.add("task-p");
-  checkbox.id = "task-p-" + taskId;
-  taskText.textContent = taskTextValue;
-  taskText.contentEditable = true;
+  taskText.classList.add("task-text");
+  taskText.id = "task-text-" + taskId;
+  taskText.textContent = "Your task text";
 
-  taskHead.addEventListener("input", function () {
-    updateTask(taskDiv.id, taskHead.textContent, taskText.textContent);
-  });
-
-  taskText.addEventListener("input", function () {
-    updateTask(taskDiv.id, taskHead.textContent, taskText.textContent);
+  const deleteBtn = document.createElement("input");
+  deleteBtn.type = "button";
+  deleteBtn.value = "delete";
+  deleteBtn.classList.add("task-btn-delete");
+  deleteBtn.id = "task-btn-delete-" + taskId;
+  deleteBtn.addEventListener("click", function () {
+    taskDelete(taskDiv.id);
   });
 
   contentDiv.appendChild(taskHead);
   contentDiv.appendChild(taskText);
   taskDiv.appendChild(checkbox);
   taskDiv.appendChild(contentDiv);
+  taskDiv.appendChild(deleteBtn);
 
   document.getElementById("tasks-container").appendChild(taskDiv);
   taskId++;
 }
 
-// Function for save task to localStorage
-function saveTask(taskHeadValue, taskTextValue) {
-  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks.push({
-    id: "task-" + taskId,
-    head: taskHeadValue,
-    text: taskTextValue,
-  });
-  localStorage.setItem("tasks", JSON.stringify(tasks));
+function taskDelete(id) {
+  document.getElementById(id).remove();
 }
 
-// Function for load task from localStorage
-function loadTask() {
-  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  tasks.forEach((task) => {
-    addTask(task.head, task.text);
-  });
-  taskId = tasks.length + 1;
-}
+// // Function for save task to localStorage
+// function saveTask(taskHeadValue, taskTextValue) {
+//   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+//   tasks.push({
+//     id: "task-" + taskId,
+//     head: taskHeadValue,
+//     text: taskTextValue,
+//   });
+//   localStorage.setItem("tasks", JSON.stringify(tasks));
+// }
+
+// // Function for load task from localStorage
+// function loadTask() {
+//   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+//   tasks.forEach((task) => {
+//     addTask(task.head, task.text);
+//   });
+//   taskId = tasks.length + 1;
+// }
