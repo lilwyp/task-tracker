@@ -44,11 +44,14 @@
 
 .task {
   padding-top: 25px;
+  padding-bottom: 10px;
   display: flex;
   align-items: flex-start;
   width: 80%;
   margin: auto;
+  margin-bottom: 5px;
   border: solid 1px lightgray;
+  border-radius: 5px;
 }
 
 .task-checkbox {
@@ -65,15 +68,27 @@
 .task-head {
   min-height: 25px;
   margin: 0;
+  padding: 2px;
 }
 
 .task-text {
   margin: 10px 0 0 0;
+  padding: 2px;
 }
 
-.task-btn-delete {
+.task-btn {
   min-width: 50px;
-  padding: 10px;
-  min-height: 25px;
-  margin: 0;
+  /* padding: 10px; */
+  height: 25px;
+  margin: 0 10px 10px 10px;
+}
+
+.content-edit {
+  border: solid 1px black;
+  border-radius: 3px;
+}
+
+.task-btns {
+  display: flex;
+  flex-direction: column;
 }
