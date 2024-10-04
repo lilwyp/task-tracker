@@ -5,7 +5,13 @@ window.onload = function () {
 };
 
 // Функция для создания таска, как нового, так и отрисовки тех, которые хранятся в localStorage
-function addTask(newBool, savedTaskId, savedTaskHead, savedTaskText) {
+function addTask(
+  newBool,
+  savedTaskCompleted,
+  savedTaskId,
+  savedTaskHead,
+  savedTaskText
+) {
   if (newBool == true) {
     const taskDiv = document.createElement("div");
     taskDiv.classList.add("task");
@@ -15,6 +21,9 @@ function addTask(newBool, savedTaskId, savedTaskHead, savedTaskText) {
     checkbox.type = "checkbox";
     checkbox.classList.add("task-checkbox");
     checkbox.id = "task-checkbox-" + taskId;
+    checkbox.addEventListener("change", function () {
+      taskComplete(taskDiv.id);
+    });
 
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("task-content");
@@ -62,6 +71,7 @@ function addTask(newBool, savedTaskId, savedTaskHead, savedTaskText) {
 
     saveTaskToLocalStorage(
       taskId,
+      false,
       taskHead.textContent,
       taskText.textContent,
       false
@@ -77,6 +87,10 @@ function addTask(newBool, savedTaskId, savedTaskHead, savedTaskText) {
     checkbox.type = "checkbox";
     checkbox.classList.add("task-checkbox");
     checkbox.id = "task-checkbox-" + savedTaskIdNumber;
+    checkbox.checked = savedTaskCompleted;
+    checkbox.addEventListener("change", function () {
+      taskComplete(taskDiv.id);
+    });
 
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("task-content");
@@ -150,6 +164,32 @@ function taskDelete(id) {
   localStorage.setItem("tasks", JSON.stringify(newTasks));
 }
 
+// Функция для отметки того, что таск выполнен и его сохранения в localStorage
+function taskComplete(taskDivId) {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  let newTasks = [];
+  tasks.forEach(function (task) {
+    if (task.savedTaskId == taskDivId) {
+      newTasks.push({
+        savedTaskId: taskDivId,
+        savedTaskCompleted: !task.savedTaskCompleted,
+        savedTaskHead: task.savedTaskHead,
+        savedTaskText: task.savedTaskText,
+        savedTaskDeleted: task.savedTaskDeleted,
+      });
+    } else {
+      newTasks.push({
+        savedTaskId: task.savedTaskId,
+        savedTaskCompleted: task.savedTaskCompleted,
+        savedTaskHead: task.savedTaskHead,
+        savedTaskText: task.savedTaskText,
+        savedTaskDeleted: task.savedTaskDeleted,
+      });
+    }
+  });
+  localStorage.setItem("tasks", JSON.stringify(newTasks));
+}
+
 // Функция для изменения задачи, принимающая ID заголовка, текста и самой кнопки
 function taskEdit(headId, textId, editBtnId) {
   if (document.getElementById(editBtnId).value == "edit") {
@@ -166,6 +206,7 @@ function taskEdit(headId, textId, editBtnId) {
       if (task.savedTaskId == "task-" + headId.replace(/\D/g, "")) {
         newTasks.push({
           savedTaskId: "task-" + headId.replace(/\D/g, ""),
+          savedTaskCompleted: task.savedTaskCompleted,
           savedTaskHead: document.getElementById(headId).textContent,
           savedTaskText: document.getElementById(textId).textContent,
           savedTaskDeleted: task.savedTaskDeleted,
@@ -173,6 +214,7 @@ function taskEdit(headId, textId, editBtnId) {
       } else {
         newTasks.push({
           savedTaskId: task.savedTaskId,
+          savedTaskCompleted: task.savedTaskCompleted,
           savedTaskHead: task.savedTaskHead,
           savedTaskText: task.savedTaskText,
           savedTaskDeleted: task.savedTaskDeleted,
@@ -193,6 +235,7 @@ function taskEdit(headId, textId, editBtnId) {
 // Функция для сохранения задачи в localStorage
 function saveTaskToLocalStorage(
   taskIdSaved,
+  taskCompleteSaved,
   taskHeadSaved,
   taskTextSaved,
   taskDeletedSaved
@@ -200,6 +243,7 @@ function saveTaskToLocalStorage(
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   tasks.push({
     savedTaskId: "task-" + taskIdSaved,
+    savedTaskCompleted: taskCompleteSaved,
     savedTaskHead: taskHeadSaved,
     savedTaskText: taskTextSaved,
     savedTaskDeleted: taskDeletedSaved,
@@ -214,6 +258,7 @@ function loadTask() {
     if (task.savedTaskDeleted != true) {
       addTask(
         (newBool = false),
+        (savedTaskCompleted = task.savedTaskCompleted),
         (savedTaskId = task.savedTaskId),
         (taskHeadContent = task.savedTaskHead),
         (taskTextContent = task.savedTaskText)
